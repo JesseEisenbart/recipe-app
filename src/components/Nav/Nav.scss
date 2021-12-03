@@ -1,0 +1,50 @@
+@import "../../styles/colors";
+
+
+.navbar {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: $white;
+    padding-top: 15px;
+    padding-bottom: 15px;
+
+    a {
+        text-decoration: none;
+    }
+
+    .logo-group {
+        display: flex;
+        margin-right: 30px;
+    }
+
+    .logo {
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 45px;
+        color: $grey-900;
+    }
+
+    .title {
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 40px;
+        font-weight: 800;
+        color: $grey-900;
+    }
+
+    .add {
+        border: none;
+        border-radius: 25px;
+        text-align: center;
+        background: $grey-900;
+        color: $green-400;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 18px;
+        padding: 14px 30px;
+    }
+}
