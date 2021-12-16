@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { addRecipe } from '../RecipeList/recipeListSlice';
 import { useNavigate } from 'react-router';
 
+import generateID from '../../scripts/id/generateID';
+
 import './RecipeForm.scss'
 
 const RecipeForm = () => {
@@ -18,6 +20,8 @@ const RecipeForm = () => {
     const [cookTime, setCookTime] = useState(0);
     const [ingredients, setIngredients] = useState([]);
     const [ingredientString, setIngredientString] = useState("");
+    const [instructions, setInstructions] = useState([]);
+    const [instructionString, setInstructionString] = useState("");
     const [errors, setErrors] = useState({});
 
     function removeImage() {
@@ -39,6 +43,9 @@ const RecipeForm = () => {
             case "ingredients":
                 setIngredientString(value);
             break;
+            case "instructions":
+                setInstructionString(value);
+            break;
             case "img":
                 setImg(URL.createObjectURL(target.files[0]));
             break;
@@ -52,6 +59,21 @@ const RecipeForm = () => {
                 setCookTime(value);
             break;
         }    
+    }
+
+    function addInstruction() {
+        let valid = validateInstruction();
+        const newList = [...instructions];
+        if (valid) {
+            newList.push(instructionString);
+            setInstructions(newList);
+            setInstructionString("");
+        }   
+    }
+
+    function removeInstruction(index) {
+        const newList = ingredients.filter((j, i) => i !== index);
+        setInstructions(newList);
     }
 
     function addIngredient() {
@@ -105,6 +127,24 @@ const RecipeForm = () => {
         return isValid;
     }
 
+    function validateInstruction() {
+        let isValid = true;
+        if (instructionString === "") {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+    
+    function validateInstructionList() {
+        let isValid = true;
+        if (!instructions.length) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
     function validateRating() {
         let isValid = true;
         if (rating > 5 || rating < 0) {
@@ -130,6 +170,11 @@ const RecipeForm = () => {
 
         if (!validateIngredientList()) {
             errorsList["ingredients"] = " *Requires at least one ingredient ";
+            formIsValid = false;
+        }
+
+        if (!validateInstructionList()) {
+            errorsList["instructions"] = " *Requires at least one step ";
             formIsValid = false;
         }
 
@@ -159,7 +204,7 @@ const RecipeForm = () => {
             if (prepTime !== "") {
                 finalCook = parseInt(prepTime);
             }
-            const recipe = createRecipe(0, title, desc, img, [finalRating], "1-4", finalCook, finalPrep, [], [], []);
+            const recipe = createRecipe(generateID(), title, desc, img, [finalRating], "1-4", finalCook, finalPrep, ingredients, instructions, []);
             dispatch(addRecipe(recipe));
             navigate("/");
         }
@@ -203,6 +248,22 @@ const RecipeForm = () => {
                         onChange={handleInputChange} 
                     />
                     <button type="button" className="button add-ingredient" onClick={addIngredient}>Add Ingredient</button>
+                </div>
+                <div className="input-group">
+                    <label htmlFor="instructions">Instructions<span className="error">{errors["instructions"]}</span></label> 
+                    <div>
+                        {instructions.map(function(instruction, id) {
+                            return (<div key={id} className="instruction-item"><li><span className="step-number">{id+1}.</span>{instruction}</li><i className="fas fa-times" onClick={() => removeInstruction(id)}></i></div>)
+                        })}
+                    </div>
+                    <input 
+                        id="instructions"
+                        type="text" 
+                        name="instructions" 
+                        value={instructionString} 
+                        onChange={handleInputChange} 
+                    />
+                    <button type="button" className="button add-instruction" onClick={addInstruction}>Add Step</button>
                 </div>
                 <div className="input-group">
                     <label htmlFor="rating">Initial Rating<span className="optional"> (0-5 optional)</span><span className="error">{errors["rating"]}</span></label> 
@@ -251,7 +312,7 @@ const RecipeForm = () => {
                     <img className="preview-image" src={img}/>
                 </div>
                 <div className="input-group">
-                    <label className="custom-file-upload button" htmlFor="img">Image</label> 
+                    <label className="button custom-file-upload" htmlFor="img">Add Image</label> 
                     <input 
                         id="img" 
                         type="file" 
@@ -259,7 +320,7 @@ const RecipeForm = () => {
                         onChange={handleInputChange} 
                     />
                 </div>  
-                <input className="button" type="submit" value="Add"/>
+                <input className="button green" type="submit" value="Add Recipe to Bank"/>
             </form>
         </div>
     )

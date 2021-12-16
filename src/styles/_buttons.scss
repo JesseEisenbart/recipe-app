@@ -1,0 +1,27 @@
+
+.btn {
+    border: none;
+    border-radius: 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    padding: 15px 30px;  
+    color: $white;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.red {
+        background-color: $red-600;
+    }
+
+    &.green {
+        background-color: $green-600;
+    }
+
+    &.blue {
+        background-color: $blue-600;
+    }
+}

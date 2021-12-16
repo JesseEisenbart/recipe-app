@@ -10,6 +10,8 @@ import store from "./store";
 import App from "./App";
 import Home from "./views/Home/Home";
 import AddRecipe from "./views/AddRecipe/AddRecipe";
+import FullRecipe from "./views/FullRecipe/FullRecipe";
+import RecipePage from "./components/RecipePage";
 
 
 //<Route path="expenses" element={<Home />} />
@@ -22,6 +24,9 @@ render(
         <Route path="/" element={<App />}>
           <Route index element={<Home />}/>
           <Route path="add" element={<AddRecipe />}/>
+          <Route path="recipes" element={<FullRecipe />}>
+            <Route path=":recipeId" element={<RecipePage />} />
+          </Route>
         </Route>
       </Routes>
     </Provider>

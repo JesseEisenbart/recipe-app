@@ -17,7 +17,7 @@ const Nav = () => {
                 </div>
             </Link>
 
-            <Link to="add"className="btn add">Add Recipe</Link>
+            <Link to="add"className="btn green">Add Recipe</Link>
         </nav>
     )
 }

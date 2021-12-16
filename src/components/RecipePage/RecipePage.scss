@@ -1,0 +1,123 @@
+@import "../../styles/colors";
+@import "../../styles/buttons";
+
+.recipe-page {
+    margin: 0;
+    padding: 0;
+    background: $white;
+
+    .banner {        
+        width: 100%;
+        background-size: cover;
+        background-repeat:no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .banner-text {
+        color: $white;
+        text-transform: uppercase;
+        font-size: 100px;
+        letter-spacing: 3px;
+        font-weight: 800;
+        text-align: center;
+        margin: 0;
+    }
+
+    .banner-rating {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $white;
+        text-transform: uppercase;
+        font-size: 40px;
+        letter-spacing: 3px;
+        font-weight: 600;
+        text-align: center;
+        line-height: 40px;
+
+        i {
+            font-size: 25px;
+        }
+    }
+
+    .delete-button {
+        margin-top: 30px;
+    }
+
+    .recipe-container {
+        padding-left: 150px;
+        padding-right: 150px;
+    }
+
+    .recipe-info {
+        margin-top: 80px;
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        span {
+            color: $grey-800;
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .pipe {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+
+    .divider-line {
+        border-bottom: 1px solid $grey-800;
+        margin-top: 45px;
+        margin-bottom: 45px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%
+    }
+
+    .section-title {
+        color: $grey-800;
+        font-size: 27px;
+        font-weight: 400;
+        letter-spacing: 0.6px;
+    }
+
+
+
+    .recipe-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .recipe-item {
+        list-style: none;
+        color: $grey-800;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-size: 20px;
+        font-weight: 300;
+        letter-spacing: 0.6px;
+    }
+
+    .recipe-ingredients {
+        .recipe-list {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+
+        .ingredient-column {
+            width: 50%;
+        }
+    }
+}
+

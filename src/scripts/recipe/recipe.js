@@ -60,7 +60,17 @@ class Recipe {
     }
 }
 
-export function createRecipe(id=0, name="", desc="", img="", ratings=[], servings="", cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
+export function getRecipeByID(id, recipies) {
+    let recipe = -1;
+    for (var i=0; i<recipies.length; i++) {
+        if (recipies[i].id === id) {
+            recipe = recipies[i];
+        }
+    }
+    return recipe;
+}
+
+export function createRecipe(id=0, name="", desc="", img="", ratings=[], servings=1, cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
     return new Recipe(id, name, desc, img, ratings, servings, cookTime, prepTime, ingredients, instructions, notes);
 }
 

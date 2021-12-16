@@ -1,4 +1,5 @@
 @import "../../styles/colors";
+@import "../../styles/buttons";
 
 
 input, button, select, textarea, label {
@@ -71,6 +72,12 @@ input, button, select, textarea, label {
         background-color: $grey-400;
     }
 
+    .add-instruction {
+        margin-top: 12px;
+        color: white;
+        background-color: $grey-400;
+    }
+
     .ingredient-item {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -91,9 +98,32 @@ input, button, select, textarea, label {
                 color: $red-500;
             }
         }
+    }
 
+    .instruction-item {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        color: $grey-400;
 
-        
+        li {
+            list-style: none;
+        }
+
+        i {
+            padding: 4px;
+            cursor: pointer;
+            color: $grey-500;
+
+            &:hover {
+                color: $red-500;
+            }
+        }
+
+        .step-number {
+            padding-right: 10px;
+        }
     }
   
     input[type=text], select {
