@@ -2,6 +2,8 @@ import { Outlet, Link } from "react-router-dom";
 import './styles/style.scss';
 import Nav from './components/Nav/Nav';
 
+
+
 function App() {
 
   return (

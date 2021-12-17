@@ -1,28 +1,36 @@
 import { useState, useEffect, useRef } from 'react'
-import { createRecipe } from '../../scripts/recipe/recipe';
-import { useDispatch } from 'react-redux';
-import { addRecipe } from '../RecipeList/recipeListSlice';
-import { useNavigate } from 'react-router';
+import { createRecipe } from '../../scripts/recipe/recipe'
+import { useDispatch, useSelector } from 'react-redux'
+import { addRecipe, updateRecipe } from '../RecipeList/recipeListSlice'
+import { useNavigate } from 'react-router'
 
-import generateID from '../../scripts/id/generateID';
+import generateID from '../../scripts/id/generateID'
 
 import './RecipeForm.scss'
 
-const RecipeForm = () => {
+const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
+    const recipes = useSelector((state) => state.recipeList.recipes);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [title, setTitle] = useState("");
-    const [desc, setDesc] = useState("");
-    const [img, setImg] = useState("");
-    const [rating, setRating] = useState(5);
-    const [prepTime, setPrepTime] = useState(0);
-    const [cookTime, setCookTime] = useState(0);
-    const [ingredients, setIngredients] = useState([]);
+    const [title, setTitle] = useState(recTitle);
+    const [desc, setDesc] = useState(recDesc);
+    const [img, setImg] = useState(recImg);
+    const [servings, setServings] = useState(recServings)
+    const [rating, setRating] = useState(recRating);
+    const [prepTime, setPrepTime] = useState(recPrep);
+    const [cookTime, setCookTime] = useState(recCook);
+    const [ingredients, setIngredients] = useState(recIngredients);
     const [ingredientString, setIngredientString] = useState("");
-    const [instructions, setInstructions] = useState([]);
+    const [instructions, setInstructions] = useState(recInstructions);
     const [instructionString, setInstructionString] = useState("");
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        // storing input name
+        localStorage.setItem("recipes", JSON.stringify(recipes));
+      }, [recipes]);
 
     function removeImage() {
         setImg("");
@@ -51,6 +59,9 @@ const RecipeForm = () => {
             break;
             case "rating":
                 setRating(value);
+            break;
+            case "servings":
+                setServings(value);
             break;
             case "prep":
                 setPrepTime(value);
@@ -183,7 +194,6 @@ const RecipeForm = () => {
             formIsValid = false;
         }
         
-
         setErrors(errorsList);
 
         return formIsValid;
@@ -195,17 +205,27 @@ const RecipeForm = () => {
             let finalRating = 0;
             let finalPrep = 0;
             let finalCook = 0;
+            let finalServings = 0;
+
             if (rating !== "") {
-                finalRating = parseInt(rating);
+                finalRating = parseFloat(rating);
             }
             if (cookTime !== "") {
                 finalPrep = parseInt(cookTime);
             }
+            if (servings !== "") {
+                finalServings = parseInt(servings);
+            }
             if (prepTime !== "") {
                 finalCook = parseInt(prepTime);
             }
-            const recipe = createRecipe(generateID(), title, desc, img, [finalRating], "1-4", finalCook, finalPrep, ingredients, instructions, []);
-            dispatch(addRecipe(recipe));
+            if (editing) {
+                const recipe = createRecipe(recId, title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);            
+                dispatch(updateRecipe(recipe))
+            } else {
+                const recipe = createRecipe(generateID(), title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
+                dispatch(addRecipe(recipe));
+            }
             navigate("/");
         }
     }
@@ -266,7 +286,7 @@ const RecipeForm = () => {
                     <button type="button" className="button add-instruction" onClick={addInstruction}>Add Step</button>
                 </div>
                 <div className="input-group">
-                    <label htmlFor="rating">Initial Rating<span className="optional"> (0-5 optional)</span><span className="error">{errors["rating"]}</span></label> 
+                    <label htmlFor="rating">Rating<span className="optional"> (0-5 optional)</span><span className="error">{errors["rating"]}</span></label> 
                     <input 
                         id="rating" 
                         type="number" 
@@ -274,6 +294,18 @@ const RecipeForm = () => {
                         value={rating} 
                         min="1" 
                         max="5" 
+                        onChange={handleInputChange} 
+                    />
+                </div>
+                <div className="input-group">
+                    <label htmlFor="servings">Servings<span className="optional"> (optional)</span></label> 
+                    <input 
+                        id="servings" 
+                        type="number" 
+                        name="servings" 
+                        value={servings} 
+                        min="1" 
+                        max="100" 
                         onChange={handleInputChange} 
                     />
                 </div>
@@ -305,9 +337,12 @@ const RecipeForm = () => {
                 </div>
                 <div>
                     <button 
+                        type="button"
                         className="remove-image" 
-                        onClick={removeImage} style={img === "" ? {display: "none"} : {display: "block"}}>
-                        <i className="fas fa-times"></i>
+                        onClick={removeImage} 
+                        style={img === "" ? {display: "none"} : {display: "block"}
+                    }>
+                    <i className="fas fa-times"></i>
                     </button>
                     <img className="preview-image" src={img}/>
                 </div>
@@ -320,7 +355,7 @@ const RecipeForm = () => {
                         onChange={handleInputChange} 
                     />
                 </div>  
-                <input className="button green" type="submit" value="Add Recipe to Bank"/>
+                <input className="button green" type="submit" value={editing ? "Update Recipe" : "Add Recipe to Bank" }/>
             </form>
         </div>
     )

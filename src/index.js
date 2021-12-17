@@ -12,9 +12,8 @@ import Home from "./views/Home/Home";
 import AddRecipe from "./views/AddRecipe/AddRecipe";
 import FullRecipe from "./views/FullRecipe/FullRecipe";
 import RecipePage from "./components/RecipePage";
+import EditRecipe from "./views/EditRecipe/EditRecipe";
 
-
-//<Route path="expenses" element={<Home />} />
 const rootElement = document.getElementById("root");
 
 render(
@@ -24,6 +23,9 @@ render(
         <Route path="/" element={<App />}>
           <Route index element={<Home />}/>
           <Route path="add" element={<AddRecipe />}/>
+          <Route path="edit" element={<FullRecipe />}>
+            <Route path=":recipeId" element={<EditRecipe />} />
+          </Route>
           <Route path="recipes" element={<FullRecipe />}>
             <Route path=":recipeId" element={<RecipePage />} />
           </Route>

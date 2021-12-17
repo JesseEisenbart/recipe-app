@@ -1,9 +1,8 @@
 import './RecipePage.scss'
 import { useSelector, useDispatch } from 'react-redux'
 import { removeRecipe } from '../RecipeList/recipeListSlice';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { getRecipeByID } from "../../scripts/recipe/recipe"
-
 
 function RecipePage() {
     const params = useParams();
@@ -14,6 +13,7 @@ function RecipePage() {
     const half = Math.ceil(ingredients.length / 2);    
     const leftIngredients = ingredients.slice(0, half);
     const rightIngredients = ingredients.slice(half);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -30,6 +30,7 @@ function RecipePage() {
                     <div className="banner-rating">{recipe.getAverageRating()}</div>
                 </div>
                 <button type="button" className="btn red delete-button" onClick={handleDelete}>DELETE</button>
+                <Link to={`/edit/${id}`}><button type="button" className="btn blue delete-button">EDIT</button></Link>
             </div>
             <div className="recipe-container">
                 <div className="recipe-info"> 

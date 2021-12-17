@@ -17,7 +17,7 @@ class Recipe {
         let total = 0;
         let finalTotal = 0;
         let len = this.ratings.length;
-        
+
         for (var i=0; i < len; i++) {
             total += this.ratings[i];
         }
@@ -39,10 +39,10 @@ class Recipe {
         var rminutes = Math.round(minutes);
         let finalstr = "";
         if (num >= 60) {
-        finalstr += rhours + "h ";
+            finalstr += rhours + "h ";
         }
         if (rminutes > 0) {
-        finalstr += rminutes + "m";
+            finalstr += rminutes + "m";
         }
         return finalstr;
     }
