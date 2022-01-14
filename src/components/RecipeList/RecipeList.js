@@ -1,13 +1,34 @@
 import { useSelector, useDispatch } from 'react-redux'
 import Recipe from "./RecipeCard/RecipeCard"
+import { useState, useEffect } from 'react'
 import './RecipeList.scss'
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore"
+import {db} from '../../config'
+
+import { formatTime, getTotalTime, getAverageRating} from '../../scripts/recipe/recipe'
+import { selectAllRecipes } from './recipeListSlice'
 
 const Recepies = () => {
+    // const [recipes, setRecipes] = useState([]);
+
+    // useEffect(() => {
+    //     const q = query(collection(db, 'recipes'));
+    //     onSnapshot(q, (querySnapshot) => {
+    //     setRecipes(querySnapshot.docs.map(doc => (
+    //             {
+    //             id: doc.id,
+    //             data: doc.data()
+    //         }
+    //         )))
+    //     })
+    // },[])
+
     const recipes = useSelector((state) => state.recipeList.recipes);
+    
     return (
         <div className="recipes-container">
             {recipes.map((rec, i) => (
-                <Recipe key={i} id={rec.id} name={rec.name} desc={rec.desc} rating={rec.getAverageRating()} img={rec.img} ingredients={rec.ingredients} instructions={rec.instructions} totalTime={rec.getTotalTime()}/>
+                <Recipe key={i} id={rec.data.id} name={rec.data.name} desc={rec.data.desc} rating={getAverageRating(rec.data.ratings)} img={rec.data.img} ingredients={rec.data.ingredients} instructions={rec.data.instructions} totalTime={getTotalTime(rec.data.cookTime, rec.data.prepTime)}/>
             ))}        
         </div>
     )

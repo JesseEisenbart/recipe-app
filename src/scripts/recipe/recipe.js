@@ -1,63 +1,42 @@
-class Recipe {
-    constructor(id, name, desc, img, ratings, servings, cookTime, prepTime, ingredients, instructions, notes) {
-        this.id = id;  
-        this.name = name;
-        this.desc = desc;
-        this.img = img;
-        this.ratings = ratings;
-        this.servings = servings;
-        this.cookTime = cookTime;
-        this.prepTime = prepTime;
-        this.ingredients = ingredients;
-        this.instructions = instructions;
-        this.notes = notes;     
+export function getAverageRating(ratings) {
+    let total = 0;
+    let finalTotal = 0;
+    let len = ratings.length;
+
+    for (var i=0; i < len; i++) {
+        total += ratings[i];
+    }
+    
+    finalTotal = (total/len);
+
+    if (!Number.isInteger(finalTotal)) {
+        finalTotal.toFixed(1);
     }
 
-    getAverageRating() {
-        let total = 0;
-        let finalTotal = 0;
-        let len = this.ratings.length;
+    return finalTotal;
+}
 
-        for (var i=0; i < len; i++) {
-            total += this.ratings[i];
-        }
-        
-        finalTotal = (total/len);
+export function formatTime(time) {
+    var num = time;
+    var hours = (num / 60);
+    var rhours = Math.floor(hours);
+    var minutes = (hours - rhours) * 60;
+    var rminutes = Math.round(minutes);
+    let finalstr = "";
 
-        if (!Number.isInteger(finalTotal)) {
-            finalTotal.toFixed(1);
-        }
-
-        return finalTotal;
+    if (num >= 60) {
+        finalstr += rhours + "h ";
     }
 
-    formatTime(time) {
-        var num = time;
-        var hours = (num / 60);
-        var rhours = Math.floor(hours);
-        var minutes = (hours - rhours) * 60;
-        var rminutes = Math.round(minutes);
-        let finalstr = "";
-        if (num >= 60) {
-            finalstr += rhours + "h ";
-        }
-        if (rminutes > 0) {
-            finalstr += rminutes + "m";
-        }
-        return finalstr;
+    if (rminutes > 0) {
+        finalstr += rminutes + "m";
     }
 
-    getCookTime() {
-        return this.formatTime(this.cookTime);
-    }
+    return finalstr;
+}
 
-    getPrepTime() {
-        return this.formatTime(this.prepTime);
-    }
-
-    getTotalTime() {
-        return this.formatTime(this.cookTime + this.prepTime);
-    }
+export function getTotalTime(cookTime, prepTime) {
+    return formatTime(cookTime + prepTime);
 }
 
 export function getRecipeByID(id, recipies) {
@@ -67,11 +46,25 @@ export function getRecipeByID(id, recipies) {
             recipe = recipies[i];
         }
     }
+
     return recipe;
 }
 
-export function createRecipe(id=0, name="", desc="", img="", ratings=[], servings=1, cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
-    return new Recipe(id, name, desc, img, ratings, servings, cookTime, prepTime, ingredients, instructions, notes);
+export function createRecipe(id=0, name="", desc="", img="", imgURL="", ratings=[], servings=1, cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
+    return {
+        id: id, 
+        name: name, 
+        desc: desc, 
+        img: img, 
+        imgURL: imgURL, 
+        ratings: ratings, 
+        servings: servings, 
+        cookTime: cookTime, 
+        prepTime: prepTime, 
+        ingredients: ingredients, 
+        instructions: instructions, 
+        notes: notes,
+    }
 }
 
 

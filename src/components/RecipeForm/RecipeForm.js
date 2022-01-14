@@ -3,20 +3,22 @@ import { createRecipe } from '../../scripts/recipe/recipe'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRecipe, updateRecipe } from '../RecipeList/recipeListSlice'
 import { useNavigate } from 'react-router'
-
+import {db} from '../../config'
+import {collection, addDoc, Timestamp} from 'firebase/firestore'
 import generateID from '../../scripts/id/generateID'
 
 import './RecipeForm.scss'
 
-const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
-    const recipes = useSelector((state) => state.recipeList.recipes);
+const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
 
+    const recipes = useSelector((state) => state.recipeList.recipes);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState(recTitle);
     const [desc, setDesc] = useState(recDesc);
     const [img, setImg] = useState(recImg);
+    const [imgURL, setImgURL] = useState(recImgURL);
     const [servings, setServings] = useState(recServings)
     const [rating, setRating] = useState(recRating);
     const [prepTime, setPrepTime] = useState(recPrep);
@@ -26,11 +28,6 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0,
     const [instructions, setInstructions] = useState(recInstructions);
     const [instructionString, setInstructionString] = useState("");
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        // storing input name
-        localStorage.setItem("recipes", JSON.stringify(recipes));
-      }, [recipes]);
 
     function removeImage() {
         setImg("");
@@ -55,6 +52,7 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0,
                 setInstructionString(value);
             break;
             case "img":
+                setImgURL(target.files[0]);
                 setImg(URL.createObjectURL(target.files[0]));
             break;
             case "rating":
@@ -199,8 +197,9 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0,
         return formIsValid;
     }
 
-    function handleSubmit(e) {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (handleValidation()) {
             let finalRating = 0;
             let finalPrep = 0;
@@ -210,22 +209,34 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0,
             if (rating !== "") {
                 finalRating = parseFloat(rating);
             }
+
             if (cookTime !== "") {
                 finalPrep = parseInt(cookTime);
             }
+
             if (servings !== "") {
                 finalServings = parseInt(servings);
             }
+
             if (prepTime !== "") {
                 finalCook = parseInt(prepTime);
             }
+
             if (editing) {
-                const recipe = createRecipe(recId, title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);            
+                const recipe = createRecipe(recId, title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);            
                 dispatch(updateRecipe(recipe))
             } else {
-                const recipe = createRecipe(generateID(), title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
+                const recipe = createRecipe(generateID(), title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
                 dispatch(addRecipe(recipe));
             }
+
+            try {
+                const recipe = createRecipe(generateID(), title, desc, imgURL, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
+                await addDoc(collection(db, "recipes"), recipe)
+            } catch (err) {
+                alert(err)
+            }
+
             navigate("/");
         }
     }

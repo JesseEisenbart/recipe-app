@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { removeRecipe } from '../RecipeList/recipeListSlice';
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getRecipeByID } from "../../scripts/recipe/recipe"
+import { getAverageRating, formatTime } from '../../scripts/recipe/recipe';
 
 function RecipePage() {
     const params = useParams();
@@ -27,7 +28,7 @@ function RecipePage() {
             <div className="banner" style={{backgroundImage : `linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url(${recipe.img})`} }>
                 <div>
                     <h1 className="banner-text">{recipe.name}</h1>
-                    <div className="banner-rating">{recipe.getAverageRating()}</div>
+                    <div className="banner-rating">{getAverageRating(recipe.ratings)}</div>
                 </div>
                 <button type="button" className="btn red delete-button" onClick={handleDelete}>DELETE</button>
                 <Link to={`/edit/${id}`}><button type="button" className="btn blue delete-button">EDIT</button></Link>
@@ -35,7 +36,7 @@ function RecipePage() {
             <div className="recipe-container">
                 <div className="recipe-info"> 
                     <div>
-                        <span>SERVES: {recipe.servings}</span><span className="pipe">|</span><span>PREP TIME: {recipe.prepTime} MINUTES</span><span className="pipe">|</span><span>COOK TIME: {recipe.cookTime} MINUTES</span>
+                        <span>SERVES: {recipe.servings}</span><span className="pipe">|</span><span>PREP TIME: {formatTime(recipe.prepTime)} MINUTES</span><span className="pipe">|</span><span>COOK TIME: {formatTime(recipe.cookTime)} MINUTES</span>
                     </div>
                 </div>  
                 <div className="divider-line"></div> 

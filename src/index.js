@@ -6,7 +6,7 @@ import {
   Route
 } from "react-router-dom";
 
-import store from "./store";
+import reduxStore from "./store";
 import App from "./App";
 import Home from "./views/Home/Home";
 import AddRecipe from "./views/AddRecipe/AddRecipe";
@@ -15,6 +15,12 @@ import RecipePage from "./components/RecipePage";
 import EditRecipe from "./views/EditRecipe/EditRecipe";
 
 const rootElement = document.getElementById("root");
+const store = reduxStore;
+
+// store.subscribe(()=>{
+//   localStorage.setItem('reduxState', JSON.stringify(store.getState()))
+//   console.log(store.getState())
+// })
 
 render(
   <BrowserRouter>
