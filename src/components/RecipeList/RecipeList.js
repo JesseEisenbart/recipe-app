@@ -1,9 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import Recipe from "./RecipeCard/RecipeCard"
-import { useState, useEffect } from 'react'
 import './RecipeList.scss'
-import {collection, query, orderBy, onSnapshot} from "firebase/firestore"
-import {db} from '../../config'
 
 import { formatTime, getTotalTime, getAverageRating} from '../../scripts/recipe/recipe'
 import { selectAllRecipes } from './recipeListSlice'

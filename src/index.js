@@ -13,6 +13,7 @@ import AddRecipe from "./views/AddRecipe/AddRecipe";
 import FullRecipe from "./views/FullRecipe/FullRecipe";
 import RecipePage from "./components/RecipePage";
 import EditRecipe from "./views/EditRecipe/EditRecipe";
+import Login from "./components/Login";
 
 const rootElement = document.getElementById("root");
 const store = reduxStore;
@@ -26,8 +27,9 @@ render(
   <BrowserRouter>
     <Provider store={store}>
       <Routes>
-        <Route path="/" element={<App />}>
-          <Route index element={<Home />}/>
+        <Route index element={<Login />}/>
+        <Route path="/" element={<App />}>      
+          <Route path="home" element={<Home />}/>
           <Route path="add" element={<AddRecipe />}/>
           <Route path="edit" element={<FullRecipe />}>
             <Route path=":recipeId" element={<EditRecipe />} />

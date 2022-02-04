@@ -3,8 +3,6 @@ import { createRecipe } from '../../scripts/recipe/recipe'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRecipe, updateRecipe } from '../RecipeList/recipeListSlice'
 import { useNavigate } from 'react-router'
-import {db} from '../../config'
-import {collection, addDoc, Timestamp} from 'firebase/firestore'
 import generateID from '../../scripts/id/generateID'
 
 import './RecipeForm.scss'
@@ -228,13 +226,6 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
             } else {
                 const recipe = createRecipe(generateID(), title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
                 dispatch(addRecipe(recipe));
-            }
-
-            try {
-                const recipe = createRecipe(generateID(), title, desc, imgURL, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
-                await addDoc(collection(db, "recipes"), recipe)
-            } catch (err) {
-                alert(err)
             }
 
             navigate("/");
