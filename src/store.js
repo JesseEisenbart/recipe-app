@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import recipeListReducer from './components/RecipeList/recipeListSlice'
+import {actionTypes, firebaseReducer} from "react-redux-firebase";
+import {firestoreReducer} from "redux-firestore";
 
-export default configureStore({
+export const store = configureStore({
   reducer: {
-    recipeList: recipeListReducer,
-  },
+    firebaseReducer,
+    firestoreReducer,
+  }
 })

@@ -1,6 +1,9 @@
 @import "../../styles/colors";
 
 .recipes-container {
+    padding-top: 100px;
+    height: 100vh;
+    background-color: white;
     display: flex;
     flex-direction: row;
     justify-content: center;

@@ -4,19 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addRecipe, updateRecipe } from '../RecipeList/recipeListSlice'
 import { useNavigate } from 'react-router'
 import generateID from '../../scripts/id/generateID'
-
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { addRecipeToDB, auth, db, logout, uploadFile } from "../../config/firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
 import './RecipeForm.scss'
 
-const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
-
-    const recipes = useSelector((state) => state.recipeList.recipes);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
+const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
     const [title, setTitle] = useState(recTitle);
     const [desc, setDesc] = useState(recDesc);
     const [img, setImg] = useState(recImg);
-    const [imgURL, setImgURL] = useState(recImgURL);
     const [servings, setServings] = useState(recServings)
     const [rating, setRating] = useState(recRating);
     const [prepTime, setPrepTime] = useState(recPrep);
@@ -26,6 +22,18 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
     const [instructions, setInstructions] = useState(recInstructions);
     const [instructionString, setInstructionString] = useState("");
     const [errors, setErrors] = useState({});
+
+    const [user, loading, error] = useAuthState(auth);
+    const [userUID, setUserUID] = useState("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (loading) return;
+        if (user) {
+            setUserUID(user.uid);
+        }
+    }, [user, loading]);
+
 
     function removeImage() {
         setImg("");
@@ -50,8 +58,8 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
                 setInstructionString(value);
             break;
             case "img":
-                setImgURL(target.files[0]);
-                setImg(URL.createObjectURL(target.files[0]));
+                let file = target.files[0];
+                uploadFile(file, setImg);
             break;
             case "rating":
                 setRating(value);
@@ -219,16 +227,19 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
             if (prepTime !== "") {
                 finalCook = parseInt(prepTime);
             }
+            
+            const recipe = createRecipe(userUID, title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);  
+            addRecipeToDB(recipe);
 
-            if (editing) {
-                const recipe = createRecipe(recId, title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);            
-                dispatch(updateRecipe(recipe))
-            } else {
-                const recipe = createRecipe(generateID(), title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
-                dispatch(addRecipe(recipe));
-            }
+            // if (editing) {
+            //     const recipe = createRecipe(recId, title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);            
+            //     dispatch(updateRecipe(recipe))
+            // } else {
+            //     const recipe = createRecipe(generateID(), title, desc, img, imgURL, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);
+            //     dispatch(addRecipe(recipe));
+            // }
 
-            navigate("/");
+            navigate("/recipes");
         }
     }
 
@@ -269,7 +280,7 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
                         value={ingredientString} 
                         onChange={handleInputChange} 
                     />
-                    <button type="button" className="button add-ingredient" onClick={addIngredient}>Add Ingredient</button>
+                    <button type="button" className="button" onClick={addIngredient}>Add Ingredient</button>
                 </div>
                 <div className="input-group">
                     <label htmlFor="instructions">Instructions<span className="error">{errors["instructions"]}</span></label> 
@@ -285,7 +296,7 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
                         value={instructionString} 
                         onChange={handleInputChange} 
                     />
-                    <button type="button" className="button add-instruction" onClick={addInstruction}>Add Step</button>
+                    <button type="button" className="button" onClick={addInstruction}>Add Step</button>
                 </div>
                 <div className="input-group">
                     <label htmlFor="rating">Rating<span className="optional"> (0-5 optional)</span><span className="error">{errors["rating"]}</span></label> 
@@ -340,7 +351,7 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
                 <div>
                     <button 
                         type="button"
-                        className="remove-image" 
+                        className="button" 
                         onClick={removeImage} 
                         style={img === "" ? {display: "none"} : {display: "block"}
                     }>
@@ -357,7 +368,7 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recImgURL="", recRating
                         onChange={handleInputChange} 
                     />
                 </div>  
-                <input className="button green" type="submit" value={editing ? "Update Recipe" : "Add Recipe to Bank" }/>
+                <input className="button" type="submit" value={editing ? "Update Recipe" : "Add Recipe to Bank" }/>
             </form>
         </div>
     )

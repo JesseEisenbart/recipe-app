@@ -2,30 +2,44 @@ import { useSelector, useDispatch } from 'react-redux'
 import Recipe from "./RecipeCard/RecipeCard"
 import './RecipeList.scss'
 
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useNavigate } from "react-router-dom";
+
+import { useState, useEffect } from 'react';
+
+import { auth, db, logout, getUserRecipes } from "../../config/firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
+
 import { formatTime, getTotalTime, getAverageRating} from '../../scripts/recipe/recipe'
 import { selectAllRecipes } from './recipeListSlice'
 
 const Recepies = () => {
-    // const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes] = useState([]);
+    const [user, loading, error] = useAuthState(auth);
+    const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const q = query(collection(db, 'recipes'));
-    //     onSnapshot(q, (querySnapshot) => {
-    //     setRecipes(querySnapshot.docs.map(doc => (
-    //             {
-    //             id: doc.id,
-    //             data: doc.data()
-    //         }
-    //         )))
-    //     })
-    // },[])
+    // Fetch user name from db
+    const fetchUserRecipes = async () => {
+        try {
+            const recipeList = await getUserRecipes(user.uid);
+            setRecipes(recipeList);
+        } catch (err) {
+            console.error(err);
+            alert("An error occured while fetching user data");
+        }
+    };
 
-    const recipes = useSelector((state) => state.recipeList.recipes);
-    
+      useEffect(() => {
+        
+        if (loading) return;
+        if (!user) return navigate("/"); fetchUserRecipes();
+      }, [user, loading]);
+
+
     return (
         <div className="recipes-container">
-            {recipes.map((rec, i) => (
-                <Recipe key={i} id={rec.data.id} name={rec.data.name} desc={rec.data.desc} rating={getAverageRating(rec.data.ratings)} img={rec.data.img} ingredients={rec.data.ingredients} instructions={rec.data.instructions} totalTime={getTotalTime(rec.data.cookTime, rec.data.prepTime)}/>
+            {recipes.map((recipe, i) => (
+                <Recipe key={i} id={recipe.uid} name={recipe.name} desc={recipe.desc} rating={getAverageRating(recipe.ratings)} img={recipe.img} ingredients={recipe.ingredients} instructions={recipe.instructions} totalTime={getTotalTime(recipe.cookTime, recipe.prepTime)}/>
             ))}        
         </div>
     )

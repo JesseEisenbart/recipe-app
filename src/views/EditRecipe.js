@@ -1,4 +1,4 @@
-import UpdateRecipe from "../../components/EditRecipe"
+import UpdateRecipe from "../components/EditRecipe";
 
 const EditRecipe = () => {
     return (

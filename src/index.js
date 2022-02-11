@@ -1,45 +1,39 @@
 import { render } from "react-dom";
-import { Provider } from "react-redux";
 import {
   BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
-
-import reduxStore from "./store";
 import App from "./App";
-import Home from "./views/Home/Home";
-import AddRecipe from "./views/AddRecipe/AddRecipe";
-import FullRecipe from "./views/FullRecipe/FullRecipe";
+import Home from "./views/Home";
+import AddRecipe from "./views/AddRecipe";
+import FullRecipe from "./views/FullRecipe";
 import RecipePage from "./components/RecipePage";
-import EditRecipe from "./views/EditRecipe/EditRecipe";
+import EditRecipe from "./views/EditRecipe";
 import Login from "./components/Login";
+import AccountPage from "./views/AccountPage";
+import Nav from "./components/Nav";
 
 const rootElement = document.getElementById("root");
-const store = reduxStore;
-
-// store.subscribe(()=>{
-//   localStorage.setItem('reduxState', JSON.stringify(store.getState()))
-//   console.log(store.getState())
-// })
 
 render(
-  <BrowserRouter>
-    <Provider store={store}>
-      <Routes>
-        <Route index element={<Login />}/>
-        <Route path="/" element={<App />}>      
-          <Route path="home" element={<Home />}/>
-          <Route path="add" element={<AddRecipe />}/>
-          <Route path="edit" element={<FullRecipe />}>
-            <Route path=":recipeId" element={<EditRecipe />} />
-          </Route>
-          <Route path="recipes" element={<FullRecipe />}>
-            <Route path=":recipeId" element={<RecipePage />} />
-          </Route>
-        </Route>
-      </Routes>
-    </Provider>
-  </BrowserRouter>,
-  rootElement
+    <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<App />}>  
+                <Route index element={<Login />}/>
+                <Route path="/" element={<Nav />}>
+                    <Route path="recipes" element={<Home />}/>
+                    <Route path="add" element={<AddRecipe />}/>
+                    <Route path="account" element={<AccountPage />} />
+                    <Route path="edit" element={<FullRecipe />}>
+                        <Route path=":recipeId" element={<EditRecipe />} />
+                    </Route>
+                    <Route path="recipes" element={<FullRecipe />}>
+                        <Route path=":recipeId" element={<RecipePage />} />
+                    </Route>
+                </Route>
+            </Route>
+        </Routes>
+    </BrowserRouter>,
+    rootElement
 );
