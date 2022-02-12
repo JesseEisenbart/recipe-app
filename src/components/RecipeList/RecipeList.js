@@ -30,16 +30,16 @@ const Recepies = () => {
     };
 
       useEffect(() => {
-        
         if (loading) return;
-        if (!user) return navigate("/"); fetchUserRecipes();
+        if (!user) return navigate("/"); 
+        fetchUserRecipes();
       }, [user, loading]);
 
 
     return (
         <div className="recipes-container">
             {recipes.map((recipe, i) => (
-                <Recipe key={i} id={recipe.uid} name={recipe.name} desc={recipe.desc} rating={getAverageRating(recipe.ratings)} img={recipe.img} ingredients={recipe.ingredients} instructions={recipe.instructions} totalTime={getTotalTime(recipe.cookTime, recipe.prepTime)}/>
+                <Recipe key={i} id={recipe.id} name={recipe.name} desc={recipe.desc} rating={recipe.ratings} img={recipe.img} ingredients={recipe.ingredients} instructions={recipe.instructions} totalTime={getTotalTime(recipe.cookTime, recipe.prepTime)}/>
             ))}        
         </div>
     )

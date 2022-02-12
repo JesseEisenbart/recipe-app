@@ -2,9 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import './RecipeCard.scss';
 
-const Recipe = ({uid, name, desc, rating, img, ingredients, instructions, totalTime}) => {
+const Recipe = ({id, name, desc, rating, img, ingredients, instructions, totalTime}) => {
     return (
-        <Link to={`/recipes/${uid}`}>
+        <Link to={`/recipes/${id}`}>
             <div className="recipe-card">
                 <div className="recipe-card-bg" style={{ backgroundImage: 'url(' + img + ')', }} ></div>
                 <img className="recipe-card-img" src={img}/>

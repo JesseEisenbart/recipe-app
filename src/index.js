@@ -26,10 +26,10 @@ render(
                     <Route path="add" element={<AddRecipe />}/>
                     <Route path="account" element={<AccountPage />} />
                     <Route path="edit" element={<FullRecipe />}>
-                        <Route path=":recipeId" element={<EditRecipe />} />
+                        <Route path=":id" element={<EditRecipe />} />
                     </Route>
                     <Route path="recipes" element={<FullRecipe />}>
-                        <Route path=":recipeId" element={<RecipePage />} />
+                        <Route path=":id" element={<RecipePage />} />
                     </Route>
                 </Route>
             </Route>

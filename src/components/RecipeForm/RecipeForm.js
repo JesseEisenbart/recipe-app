@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router'
 import generateID from '../../scripts/id/generateID'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { addRecipeToDB, auth, db, logout, uploadFile } from "../../config/firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
 import './RecipeForm.scss'
 
 const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0, recCook=0, recIngredients=[], recInstructions=[], recId=0, editing=false, recServings=1}) => {
@@ -228,7 +227,8 @@ const RecipeForm = ({recTitle="", recDesc="", recImg="", recRating=5, recPrep=0,
                 finalCook = parseInt(prepTime);
             }
             
-            const recipe = createRecipe(userUID, title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);  
+            const recipe = createRecipe(generateID(), userUID, title, desc, img, [finalRating], finalServings, finalCook, finalPrep, ingredients, instructions, []);  
+            console.log(recipe);
             addRecipeToDB(recipe);
 
             // if (editing) {

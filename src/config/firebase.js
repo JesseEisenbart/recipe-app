@@ -125,8 +125,10 @@ const logout = () => {
 // Add recipe to database 
 const addRecipeToDB = async (recipe) => {
     try {
+        console.log("The recipe to add to DB:",recipe);
         await addDoc(recipesRef, {
-            uid: recipe.uid,
+            id: recipe.id,
+            userId: recipe.userId,
             name: recipe.name,
             desc: recipe.desc, 
             img: recipe.img, 
@@ -145,31 +147,51 @@ const addRecipeToDB = async (recipe) => {
 }
 
 // Return array of the current users recipes
-const getUserRecipes = async (uid) => {
-    const q = query(recipesRef, where("uid", "==", uid));
-    const querySnapshot = await getDocs(q);
-    let recipes = [];
+const getUserRecipes = async (userId) => {
+    try {
+        const q = query(recipesRef, where("userId", "==", userId));
+        const querySnapshot = await getDocs(q);
+        let recipes = [];
 
-    querySnapshot.forEach((doc) => {
-        let recipe = doc.data();    
-        recipes.push(
-            {          
-                uid: recipe.uid,
-                name: recipe.name,
-                desc: recipe.desc, 
-                img: recipe.img, 
-                ratings: recipe.ratings, 
-                servings: recipe.servings, 
-                cookTime: recipe.cookTime, 
-                prepTime: recipe.prepTime, 
-                ingredients: recipe.ingredients, 
-                instructions: recipe.instructions, 
-                notes: recipe.notes,
-            }
-        )
-    });
+        querySnapshot.forEach((doc) => {
+            console.log(doc.data());
+            let recipe = doc.data();    
+            recipes.push(
+                {         
+                    id: recipe.id,
+                    userId: recipe.userId,
+                    name: recipe.name,
+                    desc: recipe.desc, 
+                    img: recipe.img, 
+                    ratings: recipe.ratings, 
+                    servings: recipe.servings, 
+                    cookTime: recipe.cookTime, 
+                    prepTime: recipe.prepTime, 
+                    ingredients: recipe.ingredients, 
+                    instructions: recipe.instructions, 
+                    notes: recipe.notes,
+                }
+            )
+        });
 
-    return recipes;
+        return recipes;
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
+}
+
+// Get user recipe 
+const getUserRecipe = async (userId, recipeId) => {
+    try {
+        const q = query(recipesRef, where("id", "==", recipeId));
+        const querySnapshot = await getDocs(q);
+        const recipe = querySnapshot[0].data();
+        return recipe;
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
 }
 
 // Upload file to firebase storage bucket
@@ -200,5 +222,6 @@ export {
     logout,
     addRecipeToDB,
     getUserRecipes,
+    getUserRecipe,
     uploadFile
 };

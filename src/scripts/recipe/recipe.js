@@ -50,9 +50,10 @@ export function getRecipeByID(id, recipies) {
     return recipe;
 }
 
-export function createRecipe(uid=0, name="", desc="", img="", ratings=[], servings=1, cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
+export function createRecipe(id="", userId="", name="", desc="", img="", ratings=[], servings=1, cookTime=0, prepTime=0, ingredients=[], instructions=[], notes=[]) {
     return {
-        uid: uid, 
+        id: id,
+        userId: userId, 
         name: name, 
         desc: desc, 
         img: img, 
